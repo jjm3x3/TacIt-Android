@@ -15,6 +15,7 @@
         android:text="Look at the notes!" />
 
     <ListView
+        android:id="@+id/noteList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></ListView>
 </RelativeLayout>

@@ -62,14 +62,15 @@ public class TacItContentProvider extends ContentProvider{
     public Uri insert(Uri uri, ContentValues values) {
         Log.d(MY_LOG_TAG, "Inserting into: " + uri.toString());
         SQLiteDatabase db = mHelper.getWritableDatabase();
+        long affectedRowId = -1;
         switch (URI_MATCHER.match(uri)){
             case NOTES:
-                db.insert(TacItOpenHelper.NOTES_TABLE, "_id", values);
+                affectedRowId = db.insert(TacItOpenHelper.NOTES_TABLE, "_id", values);
                 break;
             default:
                 Log.e(MY_LOG_TAG,"Could not find uri match to insert for: " + uri.toString());
         }
-        return null;
+        return notifyUriOfChanges(uri, affectedRowId);
     }
 
     @Override
@@ -81,13 +82,22 @@ public class TacItContentProvider extends ContentProvider{
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         Log.d(MY_LOG_TAG,"Updating record in: " + uri);
         SQLiteDatabase db = mHelper.getWritableDatabase();
+        int rowsAffected = 0;
         switch (URI_MATCHER.match(uri)){
             case NOTES:
-                db.update(TacItOpenHelper.NOTES_TABLE, values, selection, selectionArgs);
+                rowsAffected = db.update(TacItOpenHelper.NOTES_TABLE, values, selection, selectionArgs);
                 break;
             default:
                 Log.e(MY_LOG_TAG, "Could not find uri match to update for: " + uri.toString());
         }
-        return 0;
+        return rowsAffected;
+    }
+
+    private Uri notifyUriOfChanges(Uri uri, long id) {
+        //TODO:: possible need for switch to handle special cases
+
+        Uri affectedRowUri = Uri.withAppendedPath(uri, id + "");
+        getContext().getContentResolver().notifyChange(affectedRowUri,null);
+        return affectedRowUri;
     }
 }
