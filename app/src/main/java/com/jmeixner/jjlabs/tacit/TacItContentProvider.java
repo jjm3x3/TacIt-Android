@@ -4,6 +4,8 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteTransactionListener;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -34,7 +36,19 @@ public class TacItContentProvider extends ContentProvider{
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        SQLiteDatabase db = mHelper.getReadableDatabase();
+        String groupBy = null;
+        String having = null;
+        Cursor cur = null;
+        switch (URI_MATCHER.match(uri)){
+            case NOTES:
+                cur =  db.query(TacItOpenHelper.NOTES_TABLE,projection,selection,selectionArgs, groupBy, having, sortOrder);
+                break;
+            default:
+                Log.e(MY_LOG_TAG, "Could not find uri match to query for: " + uri.toString());
+        }
+
+        return cur;
     }
 
     @Nullable
@@ -47,6 +61,14 @@ public class TacItContentProvider extends ContentProvider{
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         Log.d(MY_LOG_TAG, "Inserting into: " + uri.toString());
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        switch (URI_MATCHER.match(uri)){
+            case NOTES:
+                db.insert(TacItOpenHelper.NOTES_TABLE, "_id", values);
+                break;
+            default:
+                Log.e(MY_LOG_TAG,"Could not find uri match to insert for: " + uri.toString());
+        }
         return null;
     }
 
@@ -57,6 +79,15 @@ public class TacItContentProvider extends ContentProvider{
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        Log.d(MY_LOG_TAG,"Updating record in: " + uri);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        switch (URI_MATCHER.match(uri)){
+            case NOTES:
+                db.update(TacItOpenHelper.NOTES_TABLE, values, selection, selectionArgs);
+                break;
+            default:
+                Log.e(MY_LOG_TAG, "Could not find uri match to update for: " + uri.toString());
+        }
         return 0;
     }
 }

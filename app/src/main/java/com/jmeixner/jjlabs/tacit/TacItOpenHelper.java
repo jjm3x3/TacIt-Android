@@ -10,7 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class TacItOpenHelper extends SQLiteOpenHelper{
     private static final String DB_NAME = "TACIT_DB";
     private static final int DB_VERSION = 1;
-    private static final String NOTES_TABLE = "ITEMS";
+    //TODO: change the name of this table!!
+    public static final String NOTES_TABLE = "ITEMS";
 
     TacItOpenHelper(Context context){
         super(context, DB_NAME, null, DB_VERSION);
@@ -19,8 +20,8 @@ public class TacItOpenHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + NOTES_TABLE + "(" +
                     TacItContract.Note.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    TacItContract.Note.REMOTE_ID + " INTEGER UNIQUE" +
-                    TacItContract.Note.CONTENT + " TEXT;");
+                    TacItContract.Note.REMOTE_ID + " INTEGER UNIQUE, " +
+                    TacItContract.Note.CONTENT + " TEXT);");
     }
 
     @Override
