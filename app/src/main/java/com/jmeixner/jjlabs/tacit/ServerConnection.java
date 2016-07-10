@@ -1,5 +1,8 @@
 package com.jmeixner.jjlabs.tacit;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
@@ -34,7 +37,7 @@ public class ServerConnection {
         noteService = retrofit.create(NoteService.class);
     }
 
-    public Call<Items> getNotes(){
+    public Call<Items> getNotes(final Context context){
         Call<Items> callback = noteService.get();
         callback.enqueue(new Callback<Items>() {
             @Override
@@ -43,7 +46,11 @@ public class ServerConnection {
                 if (response.body() != null){
                     for (Item i : response.body().items ) {
                         Log.d(MY_LOG_TAG, "Thing " + i.id + ": " + i.thing.replaceAll("\r", ""));
-                        new TacItOpenHelper()
+                        ContentResolver resolover = context.getContentResolver();
+                        ContentValues values = new ContentValues();
+                        values.put(TacItContract.Note.REMOTE_ID, i.id);
+                        values.put(TacItContract.Note.CONTENT, i.thing);
+                        resolover.insert(TacItContract.Note.CONTENT_URI, values);
                     }
                 } else {
                     Log.e(MY_LOG_TAG, "response is null: in getNotes: status: " + response.code());

@@ -17,6 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="com.jmeixner.jjlabs.tacit.TacItContentProvider"
+            android:name=".TacItContentProvider"
+            android:grantUriPermissions="true"
+            android:label="TacItContentProvider" />
+
     </application>
 
 </manifest>
