@@ -29,10 +29,16 @@ public class DataManager {
         for (Items.Item i : notes) {
             String thing = i.thing.replaceAll("\r", "");
 //                        Log.d(MY_LOG_TAG, "Thing " + i.id + ": " + thing );
-            if (existingIds.contains(i.id))
+            if (existingIds.contains(i.id)) {
                 ops.add(createNoteUpdate(i, thing));
+                existingIds.remove((Integer)i.id);
+            }
             else
                 ops.add(createNoteInsert(i, thing));
+        }
+
+        for(Integer i: existingIds){
+            ops.add(createNoteDelete(i));
         }
 
         try {
@@ -54,6 +60,12 @@ public class DataManager {
                     cur.getInt(cur.getColumnIndex(TacItContract.Note.REMOTE_ID)) + " Content: " +
                     cur.getString(cur.getColumnIndex(TacItContract.Note.CONTENT)));
         }
+    }
+
+    private static ContentProviderOperation createNoteDelete(Integer i) {
+        return ContentProviderOperation.newDelete(TacItContract.Note.CONTENT_URI)
+                .withSelection(TacItContract.Note.REMOTE_ID + " = ?", new String[]{i + ""})
+                .build();
     }
 
     private static ContentProviderOperation createNoteUpdate(Items.Item i, String thing) {

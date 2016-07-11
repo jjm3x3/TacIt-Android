@@ -75,7 +75,20 @@ public class TacItContentProvider extends ContentProvider{
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        Log.d(MY_LOG_TAG,"Updating record in: " + uri);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        int rowsAffected = 0;
+        switch (URI_MATCHER.match(uri)){
+            case NOTES:
+                rowsAffected = db.delete(TacItOpenHelper.NOTES_TABLE, selection, selectionArgs);
+                break;
+            default:
+                Log.e(MY_LOG_TAG, "Could not find uri match to update for: " + uri.toString());
+        }
+
+        notifyUriOfChanges(uri,0);
+
+        return rowsAffected;
     }
 
     @Override
@@ -90,11 +103,16 @@ public class TacItContentProvider extends ContentProvider{
             default:
                 Log.e(MY_LOG_TAG, "Could not find uri match to update for: " + uri.toString());
         }
+        notifyUriOfChanges(uri,0);
         return rowsAffected;
     }
 
     private Uri notifyUriOfChanges(Uri uri, long id) {
         //TODO:: possible need for switch to handle special cases
+        if (id == 0){
+            Log.d(MY_LOG_TAG, "notifying of this group change: " + uri.toString());
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
 
         Uri affectedRowUri = Uri.withAppendedPath(uri, id + "");
         getContext().getContentResolver().notifyChange(affectedRowUri,null);
