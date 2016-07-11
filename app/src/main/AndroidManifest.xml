@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jmeixner.jjlabs.tacit">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,11 +19,12 @@
         </activity>
 
         <provider
-            android:authorities="com.jmeixner.jjlabs.tacit.TacItContentProvider"
             android:name=".TacItContentProvider"
+            android:authorities="com.jmeixner.jjlabs.tacit.TacItContentProvider"
             android:grantUriPermissions="true"
             android:label="TacItContentProvider" />
 
+        <activity android:name=".EditNote"></activity>
     </application>
 
 </manifest>

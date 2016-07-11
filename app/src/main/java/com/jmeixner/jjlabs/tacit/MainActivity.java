@@ -2,6 +2,7 @@ package com.jmeixner.jjlabs.tacit;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -9,7 +10,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Adapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -38,6 +40,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         noteList.setAdapter(mAdapter);
+        noteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(MY_LOG_TAG, "I am item: " + id);
+                Intent nextActivity = new Intent(MainActivity.this, EditNote.class);
+                nextActivity.putExtra(EditNote.NOTE_ID, id);
+                startActivity(nextActivity);
+            }
+        });
 
         getLoaderManager().initLoader(0, null, this);
 
