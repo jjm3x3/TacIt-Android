@@ -33,14 +33,14 @@ public class ServerConnection {
         noteService = retrofit.create(NoteService.class);
     }
 
-    public Call<Items> getNotes(final Context context){
+    public Call<Items> getNotes(final Context context, final DataManager.UiCallback uiCallback){
         Call<Items> callback = noteService.get();
         callback.enqueue(new Callback<Items>() {
             @Override
             public void onResponse(Call<Items> call, Response<Items> response) {
                 Log.d(MY_LOG_TAG, response.toString());
                 if (response.body() != null){
-                    DataManager.syncNotes(context, response.body().items);
+                    DataManager.syncNotes(context, response.body().items, uiCallback);
                 } else {
                     Log.e(MY_LOG_TAG, "response is null: in getNotes: status: " + response.code());
                 }

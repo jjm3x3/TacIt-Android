@@ -21,7 +21,11 @@ public class DataManager {
 
     private static final String MY_LOG_TAG = "DataManager";
 
-    public static void syncNotes(Context context, List<Items.Item> notes) {
+
+    public interface UiCallback {
+        void whenGood();
+    }
+    public static void syncNotes(Context context, List<Items.Item> notes, UiCallback callback) {
 
         List<Integer> existingIds = getRemoteIds(context, TacItContract.Note.CONTENT_URI);
 
@@ -60,6 +64,8 @@ public class DataManager {
                     cur.getInt(cur.getColumnIndex(TacItContract.Note.REMOTE_ID)) + " Content: " +
                     cur.getString(cur.getColumnIndex(TacItContract.Note.CONTENT)));
         }
+
+        callback.whenGood();
     }
 
     private static ContentProviderOperation createNoteDelete(Integer i) {
