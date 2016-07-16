@@ -18,13 +18,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".EditNote"
+            android:label="Edit Note"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <provider
             android:name=".TacItContentProvider"
             android:authorities="com.jmeixner.jjlabs.tacit.TacItContentProvider"
             android:grantUriPermissions="true"
             android:label="TacItContentProvider" />
 
-        <activity android:name=".EditNote"></activity>
     </application>
 
 </manifest>
