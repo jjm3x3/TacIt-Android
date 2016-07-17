@@ -73,6 +73,7 @@ public class EditNote extends AppCompatActivity {
                 notePaylaod.id = noteRemoteId;
                 notePaylaod.thing = noteEditText.getText().toString();
                 RestRequestService.syncNote(this, notePaylaod);
+                finish();
                 break;
             default:
                 Log.e(MY_LOG_TAG, "This is not a menu item: " + item);
