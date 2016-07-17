@@ -8,8 +8,4 @@ import java.util.List;
 public class Items {
     public List<Item> items;
 
-    public class Item {
-        int id;
-        String thing;
-    }
 }

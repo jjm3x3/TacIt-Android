@@ -3,12 +3,18 @@ package com.jmeixner.jjlabs.tacit;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.GsonConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 /**
  * Created by jmeixner on 7/8/2016.
@@ -22,6 +28,8 @@ public class ServerConnection {
     public interface NoteService {
         @GET("item")
         Call<Items> get();
+        @PUT("item/{noteId}")
+        Call<Item> put(@Path("noteId") int noteId, @Body Item payload);
     }
 
     ServerConnection() {
@@ -33,27 +41,13 @@ public class ServerConnection {
         noteService = retrofit.create(NoteService.class);
     }
 
-    public Call<Items> getNotes(final Context context, final DataManager.UiCallback uiCallback){
-        Call<Items> callback = noteService.get();
-        callback.enqueue(new Callback<Items>() {
-            @Override
-            public void onResponse(Call<Items> call, Response<Items> response) {
-                Log.d(MY_LOG_TAG, response.toString());
-                if (response.body() != null){
-                    DataManager.syncNotes(context, response.body().items, uiCallback);
-                } else {
-                    Log.e(MY_LOG_TAG, "response is null: in getNotes: status: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Items> call, Throwable t) {
-                Log.e(MY_LOG_TAG, "Failure in getNotes: " + t.getMessage());
-                t.printStackTrace();
-            }
-        });
-        return callback;
+    public Call<Items> getNotes(){
+        return noteService.get();
     }
 
+
+    public Call<Item> putNote(Item note){
+        return noteService.put(note.id, note);
+    }
 
 }

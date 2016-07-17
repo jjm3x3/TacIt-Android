@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final String MY_LOG_TAG = "MainActivity";
     private CursorAdapter mAdapter;
-    private ServerConnection serverConnection;
     private SwipeRefreshLayout swipeRefresh;
 
     @Override
@@ -52,8 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         getLoaderManager().initLoader(0, null, this);
 
-        serverConnection = new ServerConnection();
-        serverConnection.getNotes(this, new DataManager.UiCallback() {
+        RestRequestService.getNotes(this, new DataManager.UiCallback() {
             @Override
             public void whenGood() {
                 //DO NOTHING NOT IMPORTANT
@@ -80,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onRefresh(){
         Log.d(MY_LOG_TAG, "refresh me!");
-        serverConnection.getNotes(this, new DataManager.UiCallback() {
+        RestRequestService.getNotes(this, new DataManager.UiCallback() {
             @Override
             public void whenGood() {
                 swipeRefresh.setRefreshing(false);

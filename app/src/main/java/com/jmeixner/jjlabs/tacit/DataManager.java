@@ -25,12 +25,12 @@ public class DataManager {
     public interface UiCallback {
         void whenGood();
     }
-    public static void syncNotes(Context context, List<Items.Item> notes, UiCallback callback) {
+    public static void syncNotes(Context context, List<Item> notes, UiCallback callback) {
 
         List<Integer> existingIds = getRemoteIds(context, TacItContract.Note.CONTENT_URI);
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-        for (Items.Item i : notes) {
+        for (Item i : notes) {
             String thing = i.thing.replaceAll("\r", "");
 //                        Log.d(MY_LOG_TAG, "Thing " + i.id + ": " + thing );
             if (existingIds.contains(i.id)) {
@@ -74,7 +74,7 @@ public class DataManager {
                 .build();
     }
 
-    private static ContentProviderOperation createNoteUpdate(Items.Item i, String thing) {
+    private static ContentProviderOperation createNoteUpdate(Item i, String thing) {
         return ContentProviderOperation.newUpdate(TacItContract.Note.CONTENT_URI)
                 .withValue(TacItContract.Note.REMOTE_ID, i.id)
                 .withValue(TacItContract.Note.CONTENT, thing)
@@ -93,7 +93,7 @@ public class DataManager {
         return result;
     }
 
-    private static ContentProviderOperation createNoteInsert(Items.Item i, String thing) {
+    private static ContentProviderOperation createNoteInsert(Item i, String thing) {
         return ContentProviderOperation.newInsert(TacItContract.Note.CONTENT_URI)
                 .withValue(TacItContract.Note.REMOTE_ID, i.id)
                 .withValue(TacItContract.Note.CONTENT, thing)
